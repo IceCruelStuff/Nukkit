@@ -35,4 +35,5 @@ public class BatchPacketsEvent extends ServerEvent implements Cancellable {
     public boolean isForceSync() {
         return forceSync;
     }
+
 }
