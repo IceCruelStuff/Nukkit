@@ -17,6 +17,7 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.level.LevelInitEvent;
 import cn.nukkit.event.level.LevelLoadEvent;
 import cn.nukkit.event.server.BatchPacketsEvent;
+import cn.nukkit.event.server.BatchPacketsEvent;
 import cn.nukkit.event.server.PlayerDataSerializeEvent;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.inventory.CraftingManager;
@@ -678,6 +679,14 @@ public class Server {
         }
 
         Timings.playerNetworkSendTimer.startTiming();
+
+        BatchPacketsEvent ev = new BatchPacketsEvent(players, packets, forceSync);
+        getPluginManager().callEvent(ev);
+        if (ev.isCancelled()) {
+            Timings.playerNetworkSendTimer.stopTiming();
+            return;
+        }
+
         byte[][] payload = new byte[packets.length * 2][];
         int size = 0;
         for (int i = 0; i < packets.length; i++) {
